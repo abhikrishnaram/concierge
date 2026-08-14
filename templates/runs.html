@@ -1,0 +1,25 @@
+{{define "content"}}
+<h1>Run history</h1>
+<p>
+  <a href="/runs">All</a> ·
+  <a href="/runs?source=webhook">Webhooks</a> ·
+  <a href="/runs?source=cron">Cron</a>
+</p>
+<table>
+<tr><th>Time</th><th>Source</th><th>Exit</th><th>Output</th></tr>
+{{range .Runs}}
+<tr>
+  <td class="muted">{{.StartedAt}}</td>
+  <td>{{.SourceType}} {{if .SourceName}}({{.SourceName}}){{else}}<span class="muted">#{{.SourceID}}</span>{{end}}</td>
+  <td class="{{if eq .ExitCode 0}}ok{{else}}err{{end}}">{{.ExitCode}}</td>
+  <td>
+    {{if .Stdout}}<pre>{{.Stdout}}</pre>{{end}}
+    {{if .Stderr}}<pre class="err">{{.Stderr}}</pre>{{end}}
+    {{if and (not .Stdout) (not .Stderr)}}<span class="muted">(no output)</span>{{end}}
+  </td>
+</tr>
+{{else}}
+<tr><td colspan="4" class="muted">No runs yet.</td></tr>
+{{end}}
+</table>
+{{end}}

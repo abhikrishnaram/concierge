@@ -1,0 +1,23 @@
+{{define "content"}}
+<h1>{{if .Edit}}Edit{{else}}New{{end}} webhook route</h1>
+{{if .Error}}<p class="err">{{.Error}}</p>{{end}}
+<form method="post" action="{{.Action}}">
+  <label for="path">Path</label>
+  <input type="text" id="path" name="path" value="{{.Route.Path}}" placeholder="deploy-api" required{{if .Edit}} readonly{{end}}>
+  <p class="muted">Triggered at <code>POST /hooks/&lt;path&gt;</code></p>
+
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" value="{{.Route.Name}}" required>
+
+  <label for="script">Script</label>
+  <textarea id="script" name="script" required>{{.Route.Script}}</textarea>
+
+  {{if .Edit}}
+  <label>Token</label>
+  <p><code>{{.Route.Token}}</code></p>
+  <p class="muted">Send as the <code>X-Deploy-Token</code> header on the incoming request.</p>
+  {{end}}
+
+  <p><button type="submit">Save</button> <a href="/webhooks">Cancel</a></p>
+</form>
+{{end}}

@@ -1,0 +1,21 @@
+{{define "content"}}
+<h1>Webhook routes</h1>
+{{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+<p><a href="/webhooks/new">+ New route</a></p>
+<table>
+<tr><th>Path</th><th>Name</th><th>Last run</th><th></th></tr>
+{{range .Routes}}
+<tr>
+  <td><code>/hooks/{{.Path}}</code></td>
+  <td><a href="/webhooks/{{.ID}}/edit">{{.Name}}</a></td>
+  <td>{{if .LastStatus}}<span class="{{if eq .LastStatus "ok"}}ok{{else}}err{{end}}">{{.LastStatus}}</span> <span class="muted">{{.LastAt}}</span>{{else}}<span class="muted">never</span>{{end}}</td>
+  <td class="row-actions">
+    <form method="post" action="/webhooks/{{.ID}}/run"><button type="submit">Run now</button></form>
+    <form method="post" action="/webhooks/{{.ID}}/delete"><button type="submit">Delete</button></form>
+  </td>
+</tr>
+{{else}}
+<tr><td colspan="4" class="muted">No webhook routes yet.</td></tr>
+{{end}}
+</table>
+{{end}}

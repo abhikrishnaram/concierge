@@ -1,0 +1,39 @@
+{{define "layout"}}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concierge</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; line-height: 1.4; }
+  nav { display: flex; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #8884; align-items: center; }
+  nav a { text-decoration: none; color: inherit; font-weight: 600; }
+  nav form { margin-left: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #8883; vertical-align: top; }
+  input[type=text], input[type=password], textarea { width: 100%; padding: 0.4rem; box-sizing: border-box; font-family: inherit; }
+  textarea { font-family: ui-monospace, monospace; min-height: 8rem; }
+  label { display: block; margin: 0.75rem 0 0.25rem; font-weight: 600; }
+  button, input[type=submit] { padding: 0.4rem 0.9rem; cursor: pointer; }
+  .ok { color: #1a7f37; } .err { color: #c92a2a; }
+  .muted { color: #888; font-size: 0.9em; }
+  pre { background: #8881; padding: 0.75rem; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+  .row-actions form { display: inline; }
+  .flash { background: #8882; padding: 0.5rem 0.75rem; margin-bottom: 1rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+{{if .ShowNav}}
+<nav>
+  <a href="/webhooks">Webhooks</a>
+  <a href="/cron">Cron</a>
+  <a href="/runs">Runs</a>
+  <form method="post" action="/logout"><button type="submit">Logout</button></form>
+</nav>
+{{end}}
+{{template "content" .}}
+</body>
+</html>
+{{end}}

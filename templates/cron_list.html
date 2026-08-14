@@ -1,0 +1,27 @@
+{{define "content"}}
+<h1>Cron jobs</h1>
+{{if .Flash}}<p class="flash">{{.Flash}}</p>{{end}}
+<p><a href="/cron/new">+ New job</a></p>
+<table>
+<tr><th>Name</th><th>Schedule</th><th>Next run</th><th>Last run</th><th></th><th></th></tr>
+{{range .Jobs}}
+<tr>
+  <td><a href="/cron/{{.ID}}/edit">{{.Name}}</a></td>
+  <td><code>{{.Schedule}}</code></td>
+  <td class="muted">{{if .Enabled}}{{if .NextRun}}{{.NextRun}}{{else}}—{{end}}{{else}}disabled{{end}}</td>
+  <td>{{if .LastStatus}}<span class="{{if eq .LastStatus "ok"}}ok{{else}}err{{end}}">{{.LastStatus}}</span> <span class="muted">{{.LastAt}}</span>{{else}}<span class="muted">never</span>{{end}}</td>
+  <td>
+    <form method="post" action="/cron/{{.ID}}/toggle">
+      <button type="submit">{{if .Enabled}}Disable{{else}}Enable{{end}}</button>
+    </form>
+  </td>
+  <td class="row-actions">
+    <form method="post" action="/cron/{{.ID}}/run"><button type="submit">Run now</button></form>
+    <form method="post" action="/cron/{{.ID}}/delete"><button type="submit">Delete</button></form>
+  </td>
+</tr>
+{{else}}
+<tr><td colspan="6" class="muted">No cron jobs yet.</td></tr>
+{{end}}
+</table>
+{{end}}
