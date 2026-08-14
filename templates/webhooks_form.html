@@ -13,9 +13,16 @@
   <textarea id="script" name="script" required>{{.Route.Script}}</textarea>
 
   {{if .Edit}}
-  <label>Token</label>
-  <p><code>{{.Route.Token}}</code></p>
+  <label for="trigger_url">Request URL</label>
+  <input type="text" id="trigger_url" class="mono" value="{{.TriggerURL}}" readonly onclick="this.select()">
+
+  <label for="token">Token</label>
+  <input type="text" id="token" class="mono" value="{{.Route.Token}}" readonly onclick="this.select()">
   <p class="muted">Send as the <code>X-Deploy-Token</code> header on the incoming request.</p>
+
+  <label for="curl_cmd">curl</label>
+  <input type="text" id="curl_cmd" class="mono" value="{{.CurlCmd}}" readonly onclick="this.select()">
+  <p class="muted">Click a field to select it, then copy.</p>
   {{end}}
 
   <p><button type="submit">Save</button> <a href="/webhooks">Cancel</a></p>

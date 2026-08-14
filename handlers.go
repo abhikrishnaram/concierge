@@ -3,10 +3,22 @@ package main
 import (
 	"crypto/subtle"
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 )
+
+// requestBaseURL derives scheme://host from the incoming admin request, so
+// the copyable trigger URL matches however this instance is actually
+// deployed (no hardcoded domain assumptions).
+func requestBaseURL(r *http.Request) string {
+	scheme := "http"
+	if r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https" {
+		scheme = "https"
+	}
+	return scheme + "://" + r.Host
+}
 
 type app struct {
 	db    *sql.DB
@@ -148,7 +160,12 @@ func (a *app) webhooksEditForm(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	render(w, "webhooks_form.html", map[string]any{"ShowNav": true, "Edit": true, "Action": "/webhooks/" + r.PathValue("id"), "Route": wr})
+	triggerURL := requestBaseURL(r) + "/hooks/" + wr.Path
+	curlCmd := fmt.Sprintf(`curl -X POST %s -H "X-Deploy-Token: %s"`, triggerURL, wr.Token)
+	render(w, "webhooks_form.html", map[string]any{
+		"ShowNav": true, "Edit": true, "Action": "/webhooks/" + r.PathValue("id"),
+		"Route": wr, "TriggerURL": triggerURL, "CurlCmd": curlCmd,
+	})
 }
 
 func (a *app) webhooksUpdate(w http.ResponseWriter, r *http.Request) {
