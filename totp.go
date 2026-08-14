@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/mdp/qrterminal/v3"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -30,10 +31,12 @@ func runTOTPReset() {
 	}
 	fmt.Println("New TOTP secret generated and saved to", totpSecretPath())
 	fmt.Println()
+	qrterminal.GenerateHalfBlock(key.URL(), qrterminal.L, os.Stdout)
+	fmt.Println()
 	fmt.Println("Secret:  ", key.Secret())
 	fmt.Println("otpauth URI:", key.URL())
 	fmt.Println()
-	fmt.Println("Scan the URI (as a QR code) or enter the secret manually into your authenticator app.")
+	fmt.Println("Scan the QR code above, or enter the secret manually, into your authenticator app.")
 }
 
 func loadTOTPSecret() (string, error) {
