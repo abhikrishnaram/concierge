@@ -11,8 +11,10 @@ RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags=
 # alpine, not scratch: scripts triggered by webhooks/cron need /bin/sh to run.
 # Deployments needing extra tools (docker CLI, curl, python3, ...) should
 # build a one-line derived image: FROM ghcr.io/<user>/concierge:latest + RUN apk add ...
+#
+# util-linux's nsenter (not busybox's) is needed for HOST_EXEC=1 (see runner.go).
 FROM alpine:3.20
-RUN apk add --no-cache ca-certificates
+RUN apk add --no-cache ca-certificates util-linux
 COPY --from=builder /out/concierge /usr/local/bin/concierge
 
 ENV PORT=8080

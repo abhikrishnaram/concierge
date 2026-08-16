@@ -13,7 +13,14 @@ import (
 func runScript(db *sql.DB, sourceType string, sourceID int64, script string) (exitCode int, stdout, stderr string) {
 	started := time.Now()
 
-	cmd := exec.Command("/bin/sh", "-c", script)
+	var cmd *exec.Cmd
+	if hostExec() {
+		// container must run with --pid=host + CAP_SYS_ADMIN/CAP_SYS_PTRACE (or --privileged)
+		// so /proc/1 is the host's init and nsenter can join its namespaces.
+		cmd = exec.Command("nsenter", "-t", "1", "-m", "-u", "-n", "-i", "--", "/bin/sh", "-c", script)
+	} else {
+		cmd = exec.Command("/bin/sh", "-c", script)
+	}
 	var outBuf, errBuf bytes.Buffer
 	cmd.Stdout = &outBuf
 	cmd.Stderr = &errBuf
